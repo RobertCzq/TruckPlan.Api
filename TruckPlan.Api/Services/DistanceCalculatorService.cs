@@ -6,10 +6,12 @@ namespace TruckPlan.Api.Services;
 
 public class DistanceCalculatorService : IDistanceCalculatorService
 {
-    public Double CalculateDistance(IEnumerable<GpsDataModel> gpsDataSet)
+    public double CalculateDistance(IEnumerable<GpsDataModel> gpsDataSet)
     {
         if (gpsDataSet.Count() == 1)
-            return 0;
+        {
+            return double.MinValue;
+        }
 
         double distance = 0;
         var dataSet = gpsDataSet.ToArray();

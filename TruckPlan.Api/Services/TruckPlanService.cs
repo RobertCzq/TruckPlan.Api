@@ -49,7 +49,7 @@ namespace TruckPlan.Api.Services
             if (plans == null || !plans.Any())
             {
                 _logger.LogInformation("Could not calculate distance!");
-                return 0;
+                return double.MinValue;
             }
 
 
@@ -58,7 +58,7 @@ namespace TruckPlan.Api.Services
             if (!filteredPlans.Any())
             {
                 _logger.LogInformation("Could not calculate distance!");
-                return 0;
+                return double.MinValue;
             }
 
             var filteredByDriver = new List<Models.TruckPlan>();
@@ -76,7 +76,7 @@ namespace TruckPlan.Api.Services
             if (!filteredByDriver.Any())
             {
                 _logger.LogInformation("Could not calculate distance!");
-                return 0;
+                return double.MinValue;
             }
 
             double distance = 0;
@@ -99,7 +99,7 @@ namespace TruckPlan.Api.Services
             }
 
             _logger.LogInformation("Could not calculate distance!");
-            return 0;
+            return double.MinValue;
         }
 
         public async Task<double> GetDistanceForTruckPlan(int planId)
@@ -113,7 +113,7 @@ namespace TruckPlan.Api.Services
 
             _logger.LogInformation("Could not calculate distance because there was no gps data for the plan!");
 
-            return 0;
+            return double.MinValue;
         }
     }
 }

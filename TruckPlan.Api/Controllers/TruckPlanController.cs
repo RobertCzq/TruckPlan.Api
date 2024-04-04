@@ -20,7 +20,13 @@ public class TruckPlanController : ControllerBase
     public async Task<IActionResult> GetDistanceForTruckPlan(int planId)
     {
         var distance = await _truckPlanService.GetDistanceForTruckPlan(planId);
-        return Ok(distance);
+
+        if (distance > double.MinValue)
+        {
+            return Ok(distance);
+        }
+
+        return NotFound("Could not calculate distance");
     }
 
 
@@ -30,7 +36,13 @@ public class TruckPlanController : ControllerBase
     public async Task<IActionResult> GetCountry(double latitude, double longitude)
     {
         var country = await _truckPlanService.GetCountry(latitude, longitude);
-        return Ok(country);
+
+        if (!string.IsNullOrEmpty(country))
+        {
+            return Ok(country);
+        }
+
+        return NotFound();
     }
 
     [HttpGet("GetDistanceForDrivers")]
@@ -39,6 +51,12 @@ public class TruckPlanController : ControllerBase
     public async Task<IActionResult> GetDistanceForDrivers()
     {
         var distance = await _truckPlanService.GetDistanceForDrivers();
-        return Ok(distance);
+
+        if (distance > double.MinValue)
+        {
+            return Ok(distance);
+        }
+
+        return NotFound("Could not calculate distance");
     }
 }
