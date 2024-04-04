@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckPlan.Api", "TruckPlan.Api\TruckPlan.Api.csproj", "{9C1E3A5C-E0A6-4504-899A-76AC52449D5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckPlan.Api.Tests", "TruckPlan.Api.Tests\TruckPlan.Api.Tests.csproj", "{36E18A49-393B-4F92-B71D-6FB6D2E2E4C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9C1E3A5C-E0A6-4504-899A-76AC52449D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C1E3A5C-E0A6-4504-899A-76AC52449D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C1E3A5C-E0A6-4504-899A-76AC52449D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E18A49-393B-4F92-B71D-6FB6D2E2E4C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E18A49-393B-4F92-B71D-6FB6D2E2E4C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E18A49-393B-4F92-B71D-6FB6D2E2E4C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E18A49-393B-4F92-B71D-6FB6D2E2E4C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
