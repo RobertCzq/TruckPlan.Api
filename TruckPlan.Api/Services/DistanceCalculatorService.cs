@@ -1,0 +1,30 @@
+﻿using Geolocation;
+using TruckPlan.Api.Models;
+using TruckPlan.Api.Services.Interfaces;
+
+namespace TruckPlan.Api.Services;
+
+public class DistanceCalculatorService : IDistanceCalculatorService
+{
+    public Double CalculateDistance(IEnumerable<GpsDataModel> gpsDataSet)
+    {
+        if (gpsDataSet.Count() == 1)
+            return 0;
+
+        double distance = 0;
+        var dataSet = gpsDataSet.ToArray();
+        var first = dataSet[0];
+        for (int i = 1; i < dataSet.Count(); i++)
+        {
+            distance += GetDistanceBetweenTwoPoints(first, dataSet[i]);
+            first = dataSet[i];
+        }
+
+        return distance;
+    }
+
+    private double GetDistanceBetweenTwoPoints(GpsDataModel first, GpsDataModel second)
+        => GeoCalculator.GetDistance(first.Latitude, first.Longitude, second.Latitude, second.Longitude, distanceUnit: DistanceUnit.Kilometers);
+
+}
+
