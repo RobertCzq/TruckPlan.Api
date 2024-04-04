@@ -1,18 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using TruckPlan.Api.Models;
 using TruckPlan.Api.Services.Interfaces;
 
 namespace TruckPlan.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TruckPlanController : ControllerBase
+public class TruckPlanController(ITruckPlanService truckPlanService) : ControllerBase
 {
-    private readonly ITruckPlanService _truckPlanService;
-
-    public TruckPlanController(ITruckPlanService truckPlanService)
-    {
-        _truckPlanService = truckPlanService;
-    }
+    private readonly ITruckPlanService _truckPlanService = truckPlanService;
 
     [HttpGet("GetDistanceForTruckPlan/{planId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -48,9 +44,9 @@ public class TruckPlanController : ControllerBase
     [HttpGet("GetDistanceForDrivers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetDistanceForDrivers()
+    public async Task<IActionResult> GetDistanceForDrivers([FromQuery] DistanceForDriversRequesModel distanceForDriversRequesModel)
     {
-        var distance = await _truckPlanService.GetDistanceForDrivers();
+        var distance = await _truckPlanService.GetDistanceForDrivers(distanceForDriversRequesModel);
 
         if (distance > double.MinValue)
         {

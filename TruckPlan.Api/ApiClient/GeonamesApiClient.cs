@@ -6,17 +6,11 @@ using TruckPlan.Api.Models;
 
 namespace TruckPlan.Api.ApiClient;
 
-public class GeonamesApiClient : IGeonamesApiClient
+public class GeonamesApiClient(HttpClient httpClient, ILogger<GeonamesApiClient> logger) : IGeonamesApiClient
 {
     private const string _getApiEndpoint = "/countryCodeJSON";
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<GeonamesApiClient> _logger;
-
-    public GeonamesApiClient(HttpClient httpClient, ILogger<GeonamesApiClient> logger)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly ILogger<GeonamesApiClient> _logger = logger;
 
     public async Task<string?> GetCountryName(double latitude, double longitude)
     {

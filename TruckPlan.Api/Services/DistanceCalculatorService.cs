@@ -16,7 +16,7 @@ public class DistanceCalculatorService : IDistanceCalculatorService
         double distance = 0;
         var dataSet = gpsDataSet.ToArray();
         var first = dataSet[0];
-        for (int i = 1; i < dataSet.Count(); i++)
+        for (int i = 1; i < dataSet.Length; i++)
         {
             distance += GetDistanceBetweenTwoPoints(first, dataSet[i]);
             first = dataSet[i];
@@ -25,7 +25,7 @@ public class DistanceCalculatorService : IDistanceCalculatorService
         return distance;
     }
 
-    private double GetDistanceBetweenTwoPoints(GpsDataModel first, GpsDataModel second)
+    private static double GetDistanceBetweenTwoPoints(GpsDataModel first, GpsDataModel second)
         => GeoCalculator.GetDistance(first.Latitude, first.Longitude, second.Latitude, second.Longitude, distanceUnit: DistanceUnit.Kilometers);
 
 }

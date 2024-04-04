@@ -1,29 +1,21 @@
 ﻿using TruckPlan.Api.ApiClient.Interfaces;
 using TruckPlan.Api.Data.Interfaces;
+using TruckPlan.Api.Models;
 using TruckPlan.Api.Services.Interfaces;
 
 namespace TruckPlan.Api.Services
 {
-    public class TruckPlanService : ITruckPlanService
+    public class TruckPlanService(ILogger<TruckPlanService> logger,
+        IDataStore dataStore,
+        IDistanceCalculatorService distanceCalculatorService,
+        IAgeCalculatorService ageCalculatorService,
+        IGeonamesApiClient geonamesApiClient) : ITruckPlanService
     {
-        private readonly ILogger<TruckPlanService> _logger;
-        private readonly IDataStore _dataStore;
-        private readonly IDistanceCalculatorService _distanceCalculatorService;
-        private readonly IAgeCalculatorService _ageCalculatorService;
-        private readonly IGeonamesApiClient _geonamesApiClient;
-
-        public TruckPlanService(ILogger<TruckPlanService> logger,
-            IDataStore dataStore,
-            IDistanceCalculatorService distanceCalculatorService,
-            IAgeCalculatorService ageCalculatorService,
-            IGeonamesApiClient geonamesApiClient)
-        {
-            _logger = logger;
-            _dataStore = dataStore;
-            _distanceCalculatorService = distanceCalculatorService;
-            _ageCalculatorService = ageCalculatorService;
-            _geonamesApiClient = geonamesApiClient;
-        }
+        private readonly ILogger<TruckPlanService> _logger = logger;
+        private readonly IDataStore _dataStore = dataStore;
+        private readonly IDistanceCalculatorService _distanceCalculatorService = distanceCalculatorService;
+        private readonly IAgeCalculatorService _ageCalculatorService = ageCalculatorService;
+        private readonly IGeonamesApiClient _geonamesApiClient = geonamesApiClient;
 
         public async Task<string> GetCountry(double latitude, double longitude)
         {
@@ -38,13 +30,11 @@ namespace TruckPlan.Api.Services
             return string.Empty;
         }
 
-        public async Task<double> GetDistanceForDrivers()
+        public async Task<double> GetDistanceForDrivers(DistanceForDriversRequesModel requestModel)
         {
-            var ageLimit = 50;
-            var givenCountryName = "Germany";
-            var startTime = new DateTime(2018, 2, 1, 0, 0, 0);
-            var endTime = new DateTime(2018, 2, 28, 0, 0, 0);
             var plans = await _dataStore.GetAllPlans();
+            var startDate = new DateTime(requestModel.Year, requestModel.Month, 1, 0, 0, 0);
+            var endDate = new DateTime(requestModel.Year, requestModel.Month + 1, 1, 0, 0, 0);
 
             if (plans == null || !plans.Any())
             {
@@ -53,8 +43,8 @@ namespace TruckPlan.Api.Services
             }
 
 
-            var filteredPlans = plans.Where(plan => DateTime.Compare(startTime, plan.StartDate) <= 0
-                                                    && DateTime.Compare(plan.EndDate, endTime) <= 0);
+            var filteredPlans = plans.Where(plan => DateTime.Compare(startDate, plan.StartDate) <= 0
+                                                    && DateTime.Compare(plan.EndDate, endDate) <= 0);
             if (!filteredPlans.Any())
             {
                 _logger.LogInformation("Could not calculate distance!");
@@ -68,12 +58,14 @@ namespace TruckPlan.Api.Services
                 if (driver != null)
                 {
                     var age = _ageCalculatorService.CalculateAge(driver.BirthDate);
-                    if (age > ageLimit)
+                    if (age > requestModel.AgeLimit)
+                    {
                         filteredByDriver.Add(plan);
+                    }
                 }
             }
 
-            if (!filteredByDriver.Any())
+            if (filteredByDriver.Count == 0)
             {
                 _logger.LogInformation("Could not calculate distance!");
                 return double.MinValue;
@@ -86,7 +78,7 @@ namespace TruckPlan.Api.Services
                 if (coordinates != null && coordinates.Any())
                 {
                     var countryName = await _geonamesApiClient.GetCountryName(coordinates.First().Latitude, coordinates.First().Longitude);
-                    if (countryName.Equals(givenCountryName))
+                    if (countryName.Equals(requestModel.CountryName, StringComparison.OrdinalIgnoreCase))
                     {
                         distance += _distanceCalculatorService.CalculateDistance(coordinates);
                     }
